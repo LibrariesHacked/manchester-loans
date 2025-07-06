@@ -94,7 +94,8 @@ select
     -- loanDate AND loanTime are in 'DD/MM/YYYY HH:MM:SS' format
     to_timestamp(substring(loanDate from 1 for 10) || ' ' || substring(loanTime from 12 for 8), 'DD-MM-YYYY HH24:MI:SS') as loanDateTime,
     branchID,
-    (select bf.lsoa21cd from lsoa11_to_lsoa21_bestfit bf where bf.lsoa11cd = lsoa limit 1) as lsoa,
+    -- Choose a matching lsoa21 code - randomly select one if multiple to ensure a good distribution
+    (select l.lsoa21cd from lsoa11_to_lsoa21_exact l where l.lsoa11cd = lsoa order by random() limit 1) as lsoa,
     -- Join with lsoa_lookup to get the ward
     (select wd24cd from lsoa_lookup where lsoa_lookup.lsoa21cd = lsoa) as ward
 from loans_temp;
