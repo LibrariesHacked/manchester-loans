@@ -82,10 +82,11 @@ create table loans (
     loanDateTime timestamp not null,
     branchID text not null,
     lsoa character varying(9),
-    ward character varying(9)
+    ward character varying(9),
+    postcode_district text
 );
 
-insert into loans (branchItemBorrowed, title, author, collection, itemID, loanDateTime, branchID, lsoa, ward)
+insert into loans (branchItemBorrowed, title, author, collection, itemID, loanDateTime, branchID, lsoa, ward, postcode_district)
 select 
     branchItemBorrowed, 
     title, 
@@ -98,7 +99,8 @@ select
     -- Choose a matching lsoa21 code - randomly select one if multiple to ensure a good distribution
     (select l.lsoa21cd from lsoa11_to_lsoa21_exact l where l.lsoa11cd = lsoa order by random() limit 1) as lsoa,
     -- Join with lsoa_lookup to get the ward
-    (select wd24cd from lsoa_lookup where lsoa_lookup.lsoa21cd = lsoa) as ward
+    (select wd24cd from lsoa_lookup where lsoa_lookup.lsoa21cd = lsoa) as ward,
+    anonymisedPostCodes
 from loans_temp;
 
 -- Add indexes
