@@ -14,7 +14,8 @@ create table loans_temp (
     loanDate text not null,
     loanTime text not null,
     branchID text not null,
-    lsoa text not null
+    lsoa text not null,
+    anonymisedPostCodes text not null
 );
 \copy loans_temp from 'manchester_loans.csv' with csv header;
 
